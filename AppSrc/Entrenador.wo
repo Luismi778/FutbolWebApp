@@ -1,0 +1,69 @@
+﻿Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebForm.pkg 
+Use cligaDataDictionary.dd
+Use cequipoDataDictionary.dd
+Use centrenadorDataDictionary.dd
+
+Object oEntrenador is a cWebView
+    Object oliga_DD is a cligaDataDictionary
+    End_Object
+
+    Object oequipo_DD is a cequipoDataDictionary
+        Set DDO_Server to oliga_DD
+    End_Object
+
+    Object oentrenador_DD is a centrenadorDataDictionary
+        Set DDO_Server to oequipo_DD
+    End_Object
+
+    Set Main_DD to oentrenador_DD
+    Set Server to oentrenador_DD
+
+    Set piWidth to 700
+    Set psCaption to "Entrenador"
+
+    // Your DDO structure will go here
+
+    Object oWebMainPanel is a cWebPanel
+        Set piColumnCount to 12
+        
+        // place controls here
+        Object oentrenador_ID is a cWebForm
+        Entry_Item entrenador.ID
+        Set piColumnSpan to 0
+        Set psLabel to "ID"
+        Set peLabelPosition to lpTop
+    End_Object
+
+        // Your view will grow as controls are added
+
+    Object oentrenador_Nombre is a cWebForm
+        Entry_Item entrenador.Nombre
+        Set piColumnSpan to 0
+        Set psLabel to "Nombre"
+        Set peLabelPosition to lpTop
+    End_Object
+
+    Object oentrenador_Apellido is a cWebForm
+        Entry_Item entrenador.Apellido
+        Set piColumnSpan to 0
+        Set psLabel to "Apellido"
+        Set peLabelPosition to lpTop
+    End_Object
+
+    Object oentrenador_Nacionalidad is a cWebForm
+        Entry_Item entrenador.Nacionalidad
+        Set piColumnSpan to 0
+        Set psLabel to "Nacionalidad"
+        Set peLabelPosition to lpTop
+    End_Object
+
+    Object oentrenador_EquipoID is a cWebForm
+        Entry_Item equipo.ID
+        Set piColumnSpan to 0
+        Set psLabel to "EquipoID"
+        Set peLabelPosition to lpTop
+    End_Object
+   End_Object
+End_Object
