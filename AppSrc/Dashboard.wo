@@ -1,119 +1,110 @@
-Use cWebView.pkg
+﻿Use cWebView.pkg
 Use cWebPanel.pkg
-Use cWebForm.pkg
-Use cWebButton.pkg
-Use cWebGroup.pkg
-Use cWebSpacer.pkg
 Use cWebHtmlBox.pkg
-Use cWebMenuGroup.pkg
-Use cWebMenuItem.pkg
-Use cWebLabel.pkg
-Use cWebList.pkg
-Use cWebColumn.pkg
+Use cWebGroup.pkg
 
 Object oDashboard is a cWebView
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
-    // Add a DDO Structure 
-    //
-    // There is no need to synchronize a DD structure on the client so we do
-    // not set the Server property or send ADDOStructure. We will simply use
-    // DDO's to mine data and generate HTML for our cWebHTMLBox objects.
-    // It is the HTML in these objects that is sent to the client each time 
-    // this page is shown.
-    //
-    // Also, it is important for the drill-down Navigation interface that we
-    // do not set the Server property to some DDO because this will affect 
-    // constraints in the next view that we navigate to.
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    Set piMaxWidth to 1024
     
+    Set piMaxWidth to 1024
     Set psCaption to "Dashboard"
     Set peViewType to vtUndefined
     Set pbShowCaption to False
     Set psCSSClass to "Dashboard"
-    
+
     Object oWebMainPanel is a cWebPanel
         Set piColumnCount to 24
-        
-        // - - - - - - - - - - - - - - -
-        // Main Panel's Responsive Rules
-        // - - - - - - - - - - - - - - -
+
+        // Reglas responsivas (pantallas pequeñas y tablets)
         WebSetResponsive piColumnCount rmMobile to 1
         WebSetResponsive piColumnCount rmTabletPortrait to 16
-    
+
+        // 1. BANNER PRINCIPAL OSCURO
+        Object oBanner is a cWebHtmlBox
+            Set piColumnSpan to 24
+            Set psHtml to ('<div class="banner-clubhouse" style="background-color: #0b2b36; color: white; padding: 40px; border-radius: 15px; margin-bottom: 30px;">' + ;
+                           '<div style="font-size: 12px; letter-spacing: 2px; color: #4ade80; margin-bottom: 15px;">C CLUBHOUSE / GESTIÓN DEPORTIVA</div>' + ;
+                           '<h1 style="font-size: 40px; margin: 0 0 15px 0; line-height: 1.2;">Todo tu fútbol.<br><span style="color: #4ade80;">En un mismo lugar.</span></h1>' + ;
+                           '<p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px;">Organiza las ligas, conecta los equipos<br>y da protagonismo a quienes juegan.</p>' + ;
+                           '<button style="background-color: transparent; border: 1px solid #4ade80; color: #4ade80; padding: 10px 20px; border-radius: 20px; cursor: pointer;">TU ESPACIO DE GESTIÓN</button>' + ;
+                           '</div>')
+        End_Object
+
+        // 2. TÍTULO DE SECCIÓN
+        Object oSeccionPrincipal is a cWebHtmlBox
+            Set piColumnSpan to 24
+            Set psHtml to ('<div style="margin-bottom: 20px;">' + ;
+                           '<div style="font-size: 10px; color: #4ade80; font-weight: bold; letter-spacing: 1px;">PANEL PRINCIPAL</div>' + ;
+                           '<h2 style="font-size: 22px; margin: 5px 0 0 0; color: #1e293b;">Todo listo para empezar.</h2>' + ;
+                           '</div>')
+        End_Object
+
+        // 3. GRUPO DE TARJETAS (TILES)
         Object oTiles_grp is a cWebGroup
-            Set piColumnSpan to 8
+            Set piColumnSpan to 24
             Set pbShowBorder to False
             Set pbShowCaption to False
-            Set piColumnCount to 12
-            
-            Set psCSSClass to "TilesGroup"
-    
-            Object oWelcomeTile is a cWebHtmlBox
-                Set piColumnSpan to 6
-                Set psCSSClass to "Tile Light"
-                Set psHtml to '<div Class="WebCon_Sizer"><div class="Tile_Title">Welcome</div><div Class="Tile_Subtitle">--</div></div>'
-    
-                Procedure OnLoad
-                    Send UpdateHTML ('<div class="WebCon_Sizer">' + ;
-                                     '<div class="Tile_Title">Welcome</div>' +;
-                                     '<div class="Tile_Subtitle">' - htmlEncode(psUserName(ghoWebSessionManager)) - '</div>' +;
-                                     '</div>')
-                End_Procedure
-                
-            End_Object
-    
-            Object oTile2 is a cWebHtmlBox
-                Set pbServerOnClick to True
-                Set piColumnSpan to 6
-                Set piColumnIndex to 6
-                Set psCSSClass to "Tile LightAlternate"
-                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Tile 2</div><div class="Tile_Subtitle"></div></div>'
-                                
-                // WebRegisterPath ntNavigateForwardCustom oYourViewName
-                
-                Procedure OnClick String sId String sParam
-                    Send NavigatePath
-                End_Procedure
-                
-            End_Object
-    
-            Object oTile3 is a cWebHtmlBox
-                Set pbServerOnClick to True
-                Set piColumnSpan to 6
-                Set psCSSClass to "Tile Dark"
-                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Tile 3</div><div class="Tile_Subtitle"></div></div>'
-    
-                // WebRegisterPath ntNavigateForwardCustom oYourViewName
-                
-                Procedure OnClick String sId String sParam
-                    Send NavigatePath
-                End_Procedure
-                
-            End_Object
-    
-            Object oTile4 is a cWebHtmlBox
-                Set pbServerOnClick to True
-                Set piColumnSpan to 6
-                Set piColumnIndex to 6
-                Set psCSSClass to "Tile DarkAlternate"
-                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Tile 4</div><div class="Tile_Subtitle"></div></div>'
-            
-                // WebRegisterPath ntNavigateForwardCustom oYourViewName
-                
-                Procedure OnClick String sId String sParam
-                    Send NavigatePath
-                End_Procedure
-                
-            End_Object
-        End_Object
-    
-    End_Object
-    
-    Procedure OnBeforeShow
-        // Each time this view is shown we will update the appropriate information.
-    End_Procedure
+            Set piColumnCount to 24
 
+            // TARJETA 1: LIGAS
+            Object oLigasTile is a cWebHtmlBox
+                Set piColumnSpan to 8
+                Set psCSSClass to "TileCard"
+                Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%;">' + ;
+                               '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">🏆</span><span style="color: #cbd5e1; font-size: 12px;">01</span></div>' + ;
+                               '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Ligas</h3>' + ;
+                               '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">Competiciones que lo conectan todo.</p>' + ;
+                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver ligas →</a>' + ;
+                               '</div>')
+            End_Object
+
+            // TARJETA 2: EQUIPOS
+            Object oEquiposTile is a cWebHtmlBox
+                Set piColumnSpan to 8
+                Set psCSSClass to "TileCard"
+                Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%;">' + ;
+                               '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">👕</span><span style="color: #cbd5e1; font-size: 12px;">02</span></div>' + ;
+                               '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Equipos</h3>' + ;
+                               '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">La identidad de cada club, organizada.</p>' + ;
+                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver equipos →</a>' + ;
+                               '</div>')
+            End_Object
+
+            // TARJETA 3: POSICIONES
+            Object oPosicionesTile is a cWebHtmlBox
+                Set piColumnSpan to 8
+                Set psCSSClass to "TileCard"
+                Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%;">' + ;
+                               '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">🎯</span><span style="color: #cbd5e1; font-size: 12px;">03</span></div>' + ;
+                               '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Posiciones</h3>' + ;
+                               '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">Cada rol tiene su lugar en el campo.</p>' + ;
+                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver posiciones →</a>' + ;
+                               '</div>')
+            End_Object
+
+            // TARJETA 4: ENTRENADORES
+            Object oEntrenadoresTile is a cWebHtmlBox
+                Set piColumnSpan to 8
+                Set psCSSClass to "TileCard"
+                Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%; margin-top: 20px;">' + ;
+                               '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">📋</span><span style="color: #cbd5e1; font-size: 12px;">04</span></div>' + ;
+                               '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Entrenadores</h3>' + ;
+                               '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">Los estrategas detrás de cada partido.</p>' + ;
+                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver entrenadores →</a>' + ;
+                               '</div>')
+            End_Object
+
+            // TARJETA 5: JUGADORES
+            Object oJugadoresTile is a cWebHtmlBox
+                Set piColumnSpan to 8
+                Set psCSSClass to "TileCard"
+                Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%; margin-top: 20px;">' + ;
+                               '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">🏃</span><span style="color: #cbd5e1; font-size: 12px;">05</span></div>' + ;
+                               '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Jugadores</h3>' + ;
+                               '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">El talento que hace vibrar la grada.</p>' + ;
+                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver jugadores →</a>' + ;
+                               '</div>')
+            End_Object
+
+        End_Object
+    End_Object
 End_Object
