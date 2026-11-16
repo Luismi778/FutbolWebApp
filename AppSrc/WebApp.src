@@ -40,8 +40,9 @@ Object oWebApp is a cWebApp
             Object oMenuButton is a cWebMenuButton
                 Set piMenuHeight to 500
 
+                // 1. Botón: panel de control
                 Object oDashboard_itm is a cWebMenuItem
-                    Set psCaption to C_$Dashboard
+                    Set psCaption to "panel de control"
                     
                     WebRegisterPath ntNavigateBegin oDashboard
 
@@ -50,23 +51,37 @@ Object oWebApp is a cWebApp
                     End_Procedure
                 End_Object
 
+                // 2. Menú desplegable: Vista
                 Object oViewMenu is a cWebMenuItem
-                    Set psCaption to C_$View
+                    Set psCaption to "Vista"
 
-                    Object oEntrenadorItem1 is a cWebMenuItem
-                        Set psCaption to "Entrenador"
+                    Object oSelectLiga is a cWebMenuItem
+                        Set psCaption to "SelectLiga"
+                    End_Object
+
+                    Object oSelectEquipo is a cWebMenuItem
+                        Set psCaption to "SelectEquipo"
+                    End_Object
+                    
+                    Object oSelectJugador is a cWebMenuItem
+                        Set psCaption to "SelectJugador"
+                    End_Object
+
+                    Object oSelectEntrenador is a cWebMenuItem
+                        Set psCaption to "SelectEntrenador"
 
                         WebRegisterPath ntNavigateBegin oEntrenador
 
                         Procedure OnClick
                             Forward Send OnClick
-                                Send NavigatePath
+                            Send NavigatePath
                         End_Procedure
                     End_Object
                 End_Object
 
+                // 3. Botón: Finalizar sesión
                 Object oSignOut_itm is a cWebMenuItem
-                    Set psCaption to C_$LogOut
+                    Set psCaption to "Finalizar sesión"
 
                     Procedure OnClick
                         Send RequestLogOut of ghoWebSessionManager
@@ -113,7 +128,7 @@ Object oWebApp is a cWebApp
             Object oCaptionBreadcrumb is a cWebBreadcrumb
                 Set peBreadcrumbStyle to crumbCaption
                 WebSetResponsive peBreadcrumbStyle rmMobile to crumbDropDown
-            End_Object         
+            End_Object          
         End_Object
         
         Object oActionPanel is a cWebPanel
@@ -134,7 +149,7 @@ Object oWebApp is a cWebApp
             
             Object oHorizontalBreadcrumb is a cWebBreadcrumb
                 WebSetResponsive pbRender rmMobile to False
-            End_Object         
+            End_Object          
         End_Object
 
     End_Object    
