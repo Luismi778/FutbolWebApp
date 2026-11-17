@@ -49,12 +49,19 @@ Object oDashboard is a cWebView
             Object oLigasTile is a cWebHtmlBox
                 Set piColumnSpan to 8
                 Set psCSSClass to "TileCard"
+                
                 Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%;">' + ;
                                '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">🏆</span><span style="color: #cbd5e1; font-size: 12px;">01</span></div>' + ;
                                '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Ligas</h3>' + ;
                                '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">Competiciones que lo conectan todo.</p>' + ;
-                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver ligas →</a>' + ;
+                               '<a data-ServerOnClick="abrir_ligas" href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver ligas →</a>' + ;
                                '</div>')
+                               
+                Procedure OnAction String sAction String sParam
+                    If (sAction = "abrir_ligas") Begin
+                        Send NavigateForward of oSelectLiga Self
+                    End
+                End_Procedure
             End_Object
 
             // TARJETA 2: EQUIPOS

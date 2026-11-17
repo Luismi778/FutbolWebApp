@@ -21,7 +21,7 @@ Object oEntrenador is a cWebView
     Set Server to oentrenador_DD
 
     Set piWidth to 700
-    Set psCaption to "Entrenador"
+    Set psCaption to "Entrenadores"
 
     // Your DDO structure will go here
 
