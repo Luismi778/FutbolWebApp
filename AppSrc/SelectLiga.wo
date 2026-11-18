@@ -79,6 +79,9 @@ Object oSelectLiga is a cWebView
             End_Procedure
 
         End_Object 
+        
+        // 1. Registrar la vista de selección de equipos
+        WebRegisterPath ntNavigateForward oSelectEquipo
 
         Procedure OnRowClick String sRowId
             tWebNavigateData NavigateData
@@ -86,8 +89,8 @@ Object oSelectLiga is a cWebView
 
             Case Begin
                 Case (NavigateData.eNavigateType = nfFromParent)
-                    // TODO: Descomentar cuando creemos SelectEquipo.wo
-                    // Send NavigateForward of oSelectEquipo Self
+                    // 2. Navegar a los equipos (aplica el filtro automático por Liga)
+                    Send NavigateForward of oSelectEquipo Self
                     Case Break
 
                 Case (NavigateData.eNavigateType = nfFromChild)
@@ -99,8 +102,8 @@ Object oSelectLiga is a cWebView
                     Case Break
 
                 Case Else // must be nfUndefined
-                    // TODO: Descomentar cuando creemos SelectEquipo.wo
-                    // Send NavigateForward of oSelectEquipo Self
+                    // 2. Navegar a los equipos al hacer clic normal
+                    Send NavigateForward of oSelectEquipo Self
             Case End
         End_Procedure
 
@@ -122,23 +125,25 @@ Object oSelectLiga is a cWebView
 
         End_Object 
 
+
         Object oNewButton is a cWebMenuItem
-            Set psCSSClass to "WebClearMenuItem"
-            Set psCaption to "New"
+        Set psCSSClass to "WebClearMenuItem"
+        Set psCaption to "New"
 
-            // Vinculado a la vista de detalle para crear nuevo registro
-            WebRegisterPath ntNavigateForward oZoomLiga
+    // IMPORTANTE: Cambia "oZoomLiga" por oZoomEquipo, oZoomJugador, etc., según corresponda
+    WebRegisterPath ntNavigateForward oZoomLiga 
 
-            Procedure OnClick
-                Send NavigatePath
-            End_Procedure
+    Procedure OnClick
+        Send NavigatePath
+    End_Procedure
 
-            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                Move True to NavigateData.bNewRecord
-            End_Procedure
-
-        End_Object 
+    // Esto le dice a DataFlex que abra el formulario vacío para crear uno nuevo
+    Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+        Move True to NavigateData.bNewRecord 
+    End_Procedure
+        End_Object
     End_Object 
+
 
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
         WebSet pbRender of oNewButton to True
