@@ -119,21 +119,21 @@ Object oSelectEquipo is a cWebView
         End_Object 
 
         Object oNewButton is a cWebMenuItem
-            Set psCSSClass to "WebClearMenuItem"
-            Set psCaption to "New"
+        Set psCSSClass to "WebClearMenuItem"
+        Set psCaption to "New"
 
-// ToDo: Fill in the from-main Zoom view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oZoomView
+    // IMPORTANTE: Cambia "oZoomLiga" por oZoomEquipo, oZoomJugador, etc., según corresponda
+    WebRegisterPath ntNavigateForward oZoomEquipo
 
-            Procedure OnClick
-                Send NavigatePath
-            End_Procedure
+    Procedure OnClick
+        Send NavigatePath
+    End_Procedure
 
-            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                Move True to NavigateData.bNewRecord
-            End_Procedure
-
-        End_Object 
+    // Esto le dice a DataFlex que abra el formulario vacío para crear uno nuevo
+    Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+        Move True to NavigateData.bNewRecord 
+    End_Procedure
+        End_Object
     End_Object 
 
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject

@@ -96,7 +96,7 @@ Object oSelectEntrenador is a cWebView
 
             Case Begin
                 Case (NavigateData.eNavigateType = nfFromParent)
-                Send NavigateForward of oEntrenador Self
+                    Send NavigateForward of oEntrenador Self
                     Case Break
 
                 Case (NavigateData.eNavigateType = nfFromChild)
@@ -108,10 +108,8 @@ Object oSelectEntrenador is a cWebView
                     Case Break
 
                 Case Else // must be nfUndefined
-// ToDo: Fill in the from-parent child Select view object name for navigate forward
-Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not yet defined"
-                Send NavigateForward of oEntrenador Self
-
+                    // AQUÍ ESTABA EL ERROR. Bórralo y deja solo esta línea:
+                    Send NavigateForward of oEntrenador Self
             Case End
         End_Procedure
 
@@ -137,18 +135,17 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
             Set psCSSClass to "WebClearMenuItem"
             Set psCaption to "New"
 
-// ToDo: Fill in the from-main Zoom view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oZoomView
+            // CAMBIAR AQUÍ: Debe apuntar al objeto real oEntrenador
+            WebRegisterPath ntNavigateForward oEntrenador
 
             Procedure OnClick
                 Send NavigatePath
             End_Procedure
 
             Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                Move True to NavigateData.bNewRecord
+                Move True to NavigateData.bNewRecord 
             End_Procedure
-
-        End_Object 
+       End_Object
     End_Object 
 
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
