@@ -25,16 +25,15 @@ Object oSelectEntrenador is a cWebView
     End_Object 
 
     Object oequipo_DD is a cequipoDataDictionary
-        Set DDO_Server To oliga_DD
+        Set DDO_Server to oliga_DD
     End_Object 
 
     Object oentrenador_DD is a centrenadorDataDictionary
-        Set DDO_Server To oequipo_DD
+        Set DDO_Server to oequipo_DD
     End_Object 
 
-    Set Main_DD To oentrenador_DD
-    Set Server  To oentrenador_DD
-
+    Set Main_DD to oentrenador_DD
+    Set Server  to oentrenador_DD
 
     Object oList is a cWebList
         Set piColumnSpan to 0
@@ -46,25 +45,25 @@ Object oSelectEntrenador is a cWebView
 
         Object oentrenadorNombre is a cWebColumn
             Entry_Item entrenador.Nombre
-            Set psCaption to "entrenador.Nombre"
+            Set psCaption to "Nombre"
             Set piWidth to 896
         End_Object 
 
         Object oentrenadorApellido is a cWebColumn
             Entry_Item entrenador.Apellido
-            Set psCaption to "entrenador.Apellido"
+            Set psCaption to "Apellido"
             Set piWidth to 896
         End_Object 
 
         Object oentrenadorNacionalidad is a cWebColumn
             Entry_Item entrenador.Nacionalidad
-            Set psCaption to "entrenador.Nacionalidad"
+            Set psCaption to "Nacionalidad"
             Set piWidth to 747
         End_Object 
 
-        Object oequipoID is a cWebColumn
-            Entry_Item equipo.ID
-            Set psCaption to "entrenador.EquipoID"
+        Object oequipoNombre is a cWebColumn
+            Entry_Item equipo.Nombre
+            Set psCaption to "Equipo"
             Set piWidth to 149
         End_Object 
 
@@ -76,7 +75,8 @@ Object oSelectEntrenador is a cWebView
             Set piListRowSpan to 1
             Set psBtnCssClass to "WebButtonIcon WebIcon_Info"
             Set peAlign to alignRight
-            WebRegisterPath ntNavigateForward oEntrenador
+            
+            WebRegisterPath ntNavigateForward oZoomEntrenador
 
             Procedure OnClick
                 Send NavigatePath
@@ -84,19 +84,18 @@ Object oSelectEntrenador is a cWebView
 
             Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
                 Move True to NavigateData.bReadOnly
+                Move False to NavigateData.bNewRecord
             End_Procedure
-
         End_Object 
 
-        WebRegisterPath ntNavigateForward oEntrenador
+        WebRegisterPath ntNavigateForward oZoomEntrenador
 
         Procedure OnRowClick String sRowId
             tWebNavigateData NavigateData
             Get GetNavigateData to NavigateData
-
             Case Begin
                 Case (NavigateData.eNavigateType = nfFromParent)
-                    Send NavigateForward of oEntrenador Self
+                    Send NavigatePath
                     Case Break
 
                 Case (NavigateData.eNavigateType = nfFromChild)
@@ -107,14 +106,14 @@ Object oSelectEntrenador is a cWebView
                     Send NavigateClose Self
                     Case Break
 
-                Case Else // must be nfUndefined
-                    // AQUÍ ESTABA EL ERROR. Bórralo y deja solo esta línea:
-                    Send NavigateForward of oEntrenador Self
+                Case Else 
+                    Send NavigatePath
             Case End
         End_Procedure
 
         Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
             Move True to NavigateData.bReadOnly
+            Move False to NavigateData.bNewRecord
         End_Procedure
 
     End_Object 
@@ -128,50 +127,44 @@ Object oSelectEntrenador is a cWebView
             Procedure OnClick
                 Send Search of oList
             End_Procedure
-
         End_Object 
 
         Object oNewButton is a cWebMenuItem
             Set psCSSClass to "WebClearMenuItem"
             Set psCaption to "New"
 
-            // CAMBIAR AQUÍ: Debe apuntar al objeto real oEntrenador
-            WebRegisterPath ntNavigateForward oEntrenador
+            WebRegisterPath ntNavigateForward oZoomEntrenador
 
             Procedure OnClick
                 Send NavigatePath
             End_Procedure
 
             Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                Move True to NavigateData.bNewRecord 
+                Move True to NavigateData.bNewRecord
+                Move False to NavigateData.bReadOnly
             End_Procedure
-       End_Object
+        End_Object 
     End_Object 
 
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        Forward Send OnNavigateForward NavigateData hoInvokingView hoInvokingObject
+
         WebSet pbRender of oNewButton to True
         WebSet pbRender of oDetailButton to True
 
         Case Begin
             Case (NavigateData.eNavigateType = nfFromParent)
-                // If from parent, this is a constrained drill down
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent lookup from a Zoom
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a probably a main-file lookup from a Zoom
                 WebSet pbRender of oDetailButton to False
                 Case Break
 
-            Case Else // must be nfUndefined
-                // This may be the start of a drilldown query or this may be used for some kind of custom query.
-
+            Case Else
         Case End
-
     End_Procedure
 
-
-End_Object 
+End_Object

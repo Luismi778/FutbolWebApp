@@ -11,6 +11,8 @@ Use cWebColumn.pkg
 
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
+Use ZoomEquipo.wo
+Use SelectJugador.wo
 
 Object oSelectEquipo is a cWebView
     Set psCaption to "Equipos"
@@ -24,11 +26,11 @@ Object oSelectEquipo is a cWebView
     End_Object 
 
     Object oequipo_DD is a cequipoDataDictionary
-        Set DDO_Server To oliga_DD
+        Set DDO_Server to oliga_DD
     End_Object 
 
-    Set Main_DD To oequipo_DD
-    Set Server  To oequipo_DD
+    Set Main_DD to oequipo_DD
+    Set Server  to oequipo_DD
 
 
     Object oList is a cWebList
@@ -51,30 +53,49 @@ Object oSelectEquipo is a cWebView
             Set piWidth to 149
         End_Object 
 
+        // Botón para ver el detalle (Zoom) del equipo
         Object oDetailButton is a cWebColumnButton
-        Set psCaption to "btn"
-        Set piWidth to 45
-        Set pbFixedWidth to True
-        Set pbResizable to False
-        Set piListRowSpan to 1
+            Set psCaption to "btn"
+            Set piWidth to 45
+            Set pbFixedWidth to True
+            Set pbResizable to False
+            Set piListRowSpan to 1
+            Set psBtnCssClass to "WebButtonIcon WebIcon_Info"
+            Set peAlign to alignRight
     
-        // Añade esta línea para definir la ruta de navegación al hacer clic:
-        WebRegisterPath ntNavigateForward oZoomEquipo
+            WebRegisterPath ntNavigateForward oZoomEquipo
 
-        Procedure OnClick
-            Send NavigatePath
-        End_Procedure
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
 
-        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-            Move True to NavigateData.bReadOnly
-        End_Procedure
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+                Move True to NavigateData.bReadOnly
+            End_Procedure
+        End_Object 
 
-    End_Object
+        // Botón adicional en la fila para ver los jugadores de este equipo
+       Object oJugadoresButton is a cWebColumnButton
+            Set psCaption to "Jugadores"
+            Set piWidth to 75
+            Set pbFixedWidth to True
+            Set pbResizable to False
+            Set piListRowSpan to 1
+            Set psBtnCssClass to "WebButton"
+            Set peAlign to alignRight
 
-// ToDo: Fill in the from-parent child Select view object name for navigate forward
-//        WebRegisterPath ntNavigateForward oSelectView
+            WebRegisterPath ntNavigateForward oSelectJugador
 
-        // Ruta para permitir navegación al tocar la fila:
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
+
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+                Move True to NavigateData.bReadOnly
+            End_Procedure
+       End_Object
+       
+        // Ruta global de la lista para el clic en la fila (Abre el Zoom del Equipo)
         WebRegisterPath ntNavigateForward oZoomEquipo
        
         Procedure OnRowClick String sRowId
@@ -83,7 +104,6 @@ Object oSelectEquipo is a cWebView
 
             Case Begin
                 Case (NavigateData.eNavigateType = nfFromParent)
-                    // Navegar al detalle (Zoom) del equipo seleccionado
                     Send NavigateForward of oZoomEquipo Self
                     Case Break
 
@@ -104,7 +124,7 @@ Object oSelectEquipo is a cWebView
             Move True to NavigateData.bReadOnly
         End_Procedure
 
-    End_Object 
+    End_Object // Fin de oList
 
     Object oActionGroup is a cWebMenuGroup
 
@@ -115,51 +135,47 @@ Object oSelectEquipo is a cWebView
             Procedure OnClick
                 Send Search of oList
             End_Procedure
-
         End_Object 
 
         Object oNewButton is a cWebMenuItem
-        Set psCSSClass to "WebClearMenuItem"
-        Set psCaption to "New"
+            Set psCSSClass to "WebClearMenuItem"
+            Set psCaption to "New"
 
-    // IMPORTANTE: Cambia "oZoomLiga" por oZoomEquipo, oZoomJugador, etc., según corresponda
-    WebRegisterPath ntNavigateForward oZoomEquipo
+            WebRegisterPath ntNavigateForward oZoomEquipo
 
-    Procedure OnClick
-        Send NavigatePath
-    End_Procedure
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
 
-    // Esto le dice a DataFlex que abra el formulario vacío para crear uno nuevo
-    Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-        Move True to NavigateData.bNewRecord 
-    End_Procedure
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+                Move True to NavigateData.bNewRecord 
+            End_Procedure
         End_Object
+
     End_Object 
 
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        Forward Send OnNavigateForward NavigateData hoInvokingView hoInvokingObject
+
         WebSet pbRender of oNewButton to True
         WebSet pbRender of oDetailButton to True
+        WebSet pbRender of oJugadoresButton to True
 
         Case Begin
             Case (NavigateData.eNavigateType = nfFromParent)
-                // If from parent, this is a constrained drill down
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent lookup from a Zoom
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a probably a main-file lookup from a Zoom
                 WebSet pbRender of oDetailButton to False
+                WebSet pbRender of oJugadoresButton to False
                 Case Break
 
-            Case Else // must be nfUndefined
-                // This may be the start of a drilldown query or this may be used for some kind of custom query.
-
+            Case Else 
         Case End
 
     End_Procedure
 
-
-End_Object 
+End_Object

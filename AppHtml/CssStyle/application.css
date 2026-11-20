@@ -112,3 +112,47 @@ body, #OWEBAPP {
     display: inline-block;
     margin-top: auto;
 }
+
+/* Recuadros blancos en ZoomJugador (edición y solo lectura) */
+#OWEBAPP .CampoBlanco,
+#OWEBAPP .CampoBlanco .WebControl_Outer,
+#OWEBAPP .CampoBlanco .WebControl_Inner,
+#OWEBAPP .CampoBlanco .WebForm_Body,
+#OWEBAPP .CampoBlanco .WebControl_Body,
+#OWEBAPP .CampoBlanco .WebForm_Input,
+#OWEBAPP .CampoBlanco .WebForm_Data,
+#OWEBAPP .CampoBlanco input,
+#OWEBAPP .CampoBlanco input[readonly],
+#OWEBAPP .CampoBlanco input[disabled],
+#OWEBAPP .CampoBlanco .WebReadOnly,
+#OWEBAPP .CampoBlanco .WebDisabled {
+    background-color: #ffffff !important;
+    color: #1a202c !important;
+    opacity: 1 !important;
+    box-sizing: border-box !important;
+}
+
+#OWEBAPP .CampoBlanco .WebForm_Input,
+#OWEBAPP .CampoBlanco .WebForm_Data,
+#OWEBAPP .CampoBlanco input,
+#OWEBAPP .CampoBlanco input[readonly],
+#OWEBAPP .CampoBlanco input[disabled],
+#OWEBAPP .CampoBlanco .WebReadOnly,
+#OWEBAPP .CampoBlanco .WebDisabled {
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    min-height: 38px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+#OWEBAPP .CampoBlanco input,
+#OWEBAPP .CampoBlanco input[readonly],
+#OWEBAPP .CampoBlanco input[disabled] {
+    width: 100% !important;
+}
+
+#OWEBAPP .CampoBlanco .WebForm_Data,
+#OWEBAPP .CampoBlanco .WebReadOnly {
+    display: block !important;
+}

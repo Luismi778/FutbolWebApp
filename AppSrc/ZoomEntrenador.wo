@@ -1,0 +1,230 @@
+﻿// C:\DataFlex Projects\FutbolWebApp\AppSrc\ZoomEntrenador.wo
+// ZoomEntrenador
+//
+
+Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebForm.pkg 
+Use cWebMenuGroup.pkg
+Use cWebMenuItem.pkg
+
+Use cligaDataDictionary.dd
+Use cequipoDataDictionary.dd
+Use centrenadorDataDictionary.dd
+Use SelectEquipo.wo
+
+Object oZoomEntrenador is a cWebView
+    Set piColumnCount to 12
+    Set psCaption to "Nuevo entrenador"
+    Set peWebViewStyle to wvsDrilldown
+    Set peViewType to vtZoom
+    Set pbShowCaption to False
+    Set Verify_Save_Msg to 0
+    Set piMaxWidth to 1024
+
+    Object oliga_DD is a cligaDataDictionary
+    End_Object
+
+    Object oequipo_DD is a cequipoDataDictionary
+        Set DDO_Server to oliga_DD
+    End_Object
+
+    Object oentrenador_DD is a centrenadorDataDictionary
+        Set DDO_Server to oequipo_DD
+    End_Object
+
+    Set Main_DD to oentrenador_DD
+    Set Server  to oentrenador_DD
+
+    Object oWebMainPanel is a cWebPanel
+        Set piColumnCount to 12
+        WebSetResponsive piColumnCount rmMobile to 4
+
+        Object oentrenador_Nombre is a cWebForm
+            Entry_Item entrenador.Nombre
+            Set piColumnSpan to 6
+            Set piColumnIndex to 0
+            Set peLabelPosition to lpTop
+            Set psLabel to "Nombre"
+            Set psCSSClass to "CampoBlanco"
+        End_Object
+
+        Object oentrenador_Apellido is a cWebForm
+            Entry_Item entrenador.Apellido
+            Set piColumnSpan to 6
+            Set piColumnIndex to 6
+            Set peLabelPosition to lpTop
+            Set psLabel to "Apellido"
+            Set psCSSClass to "CampoBlanco"
+        End_Object
+
+        Object oequipo_Nombre is a cWebForm
+            Entry_Item equipo.Nombre
+            Set piColumnSpan to 6
+            Set piColumnIndex to 0
+            Set peLabelPosition to lpTop
+            Set psLabel to "Equipo"
+            Set psCSSClass to "CampoBlanco"
+            Set pbPromptButton to True
+
+            WebRegisterPath ntNavigateForward oSelectEquipo
+
+            Procedure OnPrompt
+                Send NavigatePath
+            End_Procedure
+        End_Object
+
+        Object oentrenador_Nacionalidad is a cWebForm
+            Entry_Item entrenador.Nacionalidad
+            Set piColumnSpan to 6
+            Set piColumnIndex to 6
+            Set peLabelPosition to lpTop
+            Set psLabel to "Nacionalidad"
+            Set psCSSClass to "CampoBlanco"
+        End_Object
+    End_Object 
+
+    Object oActionGroup is a cWebMenuGroup
+
+        Object oSaveBtn is a cWebMenuItem
+            Set psCSSClass to "WebSaveMenuItem"
+            Set psCaption to "Save"
+
+            Procedure OnClick
+                Send Request_Save
+            End_Procedure
+        End_Object
+
+        Object oEditBtn is a cWebMenuItem
+            Set psCSSClass to "WebEditMenuItem"
+            Set psCaption to "Edit"
+
+            Procedure OnClick
+                Send ChangeEditMode True
+                Send SetActionButtons
+            End_Procedure
+        End_Object
+
+        Object oDeleteBtn is a cWebMenuItem
+            Set psCSSClass to "WebDeleteMenuItem"
+            Set psCaption to "Delete"
+            Set peActionDisplay to adMenu
+
+            Procedure OnClick
+                Send Request_Delete
+            End_Procedure
+        End_Object
+
+        Object oCancelChangesBtn is a cWebMenuItem
+            Set psCSSClass to "WebIcon_Refresh"
+            Set psCaption to "Clear Changes"
+            Set peActionDisplay to adMenu
+
+            Procedure OnClick
+                Send RefreshRecord
+            End_Procedure
+        End_Object
+    End_Object
+
+    Function NavigateCaption Returns String
+        String sNombre
+        Boolean bHasRecord
+
+        Get HasRecord of oentrenador_DD to bHasRecord
+        Move (Trim(entrenador.Nombre)) to sNombre
+
+        If (sNombre = "" and bHasRecord) Begin
+            Get Field_Current_Value of oentrenador_DD Field entrenador.Nombre to sNombre
+            Move (Trim(sNombre)) to sNombre
+        End
+
+        If (sNombre <> "") Begin
+            Function_Return ("Entrenador: " + sNombre)
+        End
+        Else If (bHasRecord or entrenador.ID > 0) Begin
+            Function_Return "Entrenador"
+        End
+
+        Function_Return "Nuevo entrenador"
+    End_Function
+
+    Function GetBreadcrumbCaption Returns String
+        String sCaption
+        Get NavigateCaption to sCaption
+        Function_Return sCaption
+    End_Function
+
+    Procedure UpdateViewCaption
+        String sCaption
+        Get NavigateCaption to sCaption
+        WebSet psCaption to sCaption
+    End_Procedure
+
+    Procedure OnChangeRecord Handle hoServer
+        Forward Send OnChangeRecord hoServer
+        Send UpdateViewCaption
+    End_Procedure
+
+    Procedure SetActionButtons
+        tWebNavigateData NavigateData
+        Boolean bHasRecord
+        Handle hoDD
+
+        Get Server to hoDD
+        Get GetNavigateData to NavigateData
+        Get HasRecord of hoDD to bHasRecord
+
+        WebSet pbRender of oEditBtn to False
+        WebSet pbRender of oSaveBtn to False
+        WebSet pbRender of oCancelChangesBtn to False
+        WebSet pbRender of oDeleteBtn to False
+
+        If (NavigateData.bReadOnly) Begin
+            WebSet pbRender of oEditBtn to True
+        End
+        Else Begin
+            WebSet pbRender of oSaveBtn to True
+            WebSet pbRender of oCancelChangesBtn to True
+            WebSet pbRender of oDeleteBtn to bHasRecord
+        End
+    End_Procedure
+
+    Procedure OnShow
+        Forward Send OnShow
+        Send UpdateViewCaption
+    End_Procedure
+
+    Procedure OnLoad
+        Forward Send OnLoad
+        Send UpdateViewCaption
+    End_Procedure
+
+    Procedure OnViewSaved Handle hoServer Boolean bChanged
+        Send NavigateClose Self
+    End_Procedure
+
+    Procedure OnViewDeleted Handle hoDDO
+        Send NavigateClose Self
+    End_Procedure
+
+    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        Forward Send OnNavigateForward NavigateData hoInvokingView hoInvokingObject
+
+        Case Begin
+            Case (NavigateData.eNavigateType = nfFromMain)
+                Case Break
+
+            Case (NavigateData.eNavigateType = nfFromParent)
+                Case Break
+
+            Case (NavigateData.eNavigateType = nfFromChild)
+                Case Break
+
+            Case Else
+        Case End
+
+        Send SetActionButtons
+        Send UpdateViewCaption
+    End_Procedure
+
+End_Object
