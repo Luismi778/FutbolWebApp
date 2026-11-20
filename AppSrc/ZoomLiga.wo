@@ -8,8 +8,11 @@ Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
 Use cWebButton.pkg
+Use cWebList.pkg
+Use cWebColumn.pkg
 
 Use cligaDataDictionary.dd
+Use cequipoDataDictionary.dd
 Use SelectEquipo.wo
 
 Object oZoomLiga is a cWebView
@@ -22,6 +25,10 @@ Object oZoomLiga is a cWebView
     Set piMaxWidth to 1024
 
     Object oliga_DD is a cligaDataDictionary
+    End_Object 
+
+    Object oequipo_DD is a cequipoDataDictionary
+        Set DDO_Server to oliga_DD
     End_Object 
 
     Set Main_DD to oliga_DD
@@ -64,16 +71,40 @@ Object oZoomLiga is a cWebView
             Set psLabel to "EquiposMax"
         End_Object 
 
-        Object oEquiposBtn is a cWebButton
-            Set psCaption to "Equipos"
-            Set piColumnSpan to 3
+        // =====================================================================
+        // SPRINT 2 - TAREA FROM PARENT (Zoom liga):
+        // 1º Botón en Zoom liga que muestre los equipos de esa liga (implementado
+        //    previamente y comentado al pasar al 2º punto):
+        //
+        // Object oEquiposBtn is a cWebButton
+        //     Set psCaption to "Equipos"
+        //     Set piColumnSpan to 3
+        //     Set piColumnIndex to 0
+        //
+        //     WebRegisterPath ntNavigateForward oSelectEquipo
+        //
+        //     Procedure OnClick
+        //         Send NavigatePath
+        //     End_Procedure
+        // End_Object
+        //
+        // 2º En vez del botón, en Zoom liga, los equipos de esa liga:
+        //    Lista enlazada a oequipo_DD con DDO_Server = oliga_DD para mostrar
+        //    los equipos pertenecientes a la liga activa.
+        // =====================================================================
+
+        Object oEquiposList is a cWebList
+            Set piColumnSpan to 12
             Set piColumnIndex to 0
+            Set psCaption to "Equipos de la Liga"
+            Set pbShowHeader to True
+            Set Server to oequipo_DD
 
-            WebRegisterPath ntNavigateForward oSelectEquipo
-
-            Procedure OnClick
-                Send NavigatePath
-            End_Procedure
+            Object oequipoNombreCol is a cWebColumn
+                Entry_Item equipo.Nombre
+                Set psCaption to "Equipo"
+                Set piWidth to 300
+            End_Object
         End_Object
     End_Object 
 

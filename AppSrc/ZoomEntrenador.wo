@@ -126,37 +126,56 @@ Object oZoomEntrenador is a cWebView
         End_Object
     End_Object
 
-    Function NavigateCaption Returns String
-        String sNombre
+    Function WebCrumb_Caption Returns String
+        String sNombre sApellido
         Boolean bHasRecord
 
         Get HasRecord of oentrenador_DD to bHasRecord
-        Move (Trim(entrenador.Nombre)) to sNombre
 
-        If (sNombre = "" and bHasRecord) Begin
+        If (bHasRecord or entrenador.ID > 0) Begin
             Get Field_Current_Value of oentrenador_DD Field entrenador.Nombre to sNombre
             Move (Trim(sNombre)) to sNombre
-        End
 
-        If (sNombre <> "") Begin
-            Function_Return ("Entrenador: " + sNombre)
-        End
-        Else If (bHasRecord or entrenador.ID > 0) Begin
-            Function_Return "Entrenador"
+            If (sNombre = "") Begin
+                Move (Trim(entrenador.Nombre)) to sNombre
+            End
+
+            Get Field_Current_Value of oentrenador_DD Field entrenador.Apellido to sApellido
+            Move (Trim(sApellido)) to sApellido
+
+            If (sApellido = "") Begin
+                Move (Trim(entrenador.Apellido)) to sApellido
+            End
+
+            If (sNombre <> "" and sApellido <> "") Begin
+                Function_Return ("Entrenador: " + sNombre + " " + sApellido)
+            End
+            Else If (sNombre <> "") Begin
+                Function_Return ("Entrenador: " + sNombre)
+            End
+            Else Begin
+                Function_Return "Entrenador"
+            End
         End
 
         Function_Return "Nuevo entrenador"
     End_Function
 
+    Function NavigateCaption Returns String
+        String sCaption
+        Get WebCrumb_Caption to sCaption
+        Function_Return sCaption
+    End_Function
+
     Function GetBreadcrumbCaption Returns String
         String sCaption
-        Get NavigateCaption to sCaption
+        Get WebCrumb_Caption to sCaption
         Function_Return sCaption
     End_Function
 
     Procedure UpdateViewCaption
         String sCaption
-        Get NavigateCaption to sCaption
+        Get WebCrumb_Caption to sCaption
         WebSet psCaption to sCaption
     End_Procedure
 

@@ -7,11 +7,11 @@ Use cWebPanel.pkg
 Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
+Use cWebButton.pkg
 
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
 Use cjugadorDataDictionary.dd
-Use cposicionDataDictionary.dd
 Use cjugadorposicionDataDictionary.dd
 Use SelectEquipo.wo
 
@@ -35,17 +35,12 @@ Object oZoomJugador is a cWebView
         Set DDO_Server to oequipo_DD
     End_Object 
 
-    Object oposicion_DD is a cposicionDataDictionary
-    End_Object 
-
     Object ojugadorposicion_DD is a cjugadorposicionDataDictionary
         Set DDO_Server to ojugador_DD
-        Set DDO_Server to oposicion_DD
     End_Object 
 
     Set Main_DD to ojugador_DD
     Set Server  to ojugador_DD
-
 
     Object oWebMainPanel is a cWebPanel
         Set piColumnCount to 12
@@ -92,7 +87,25 @@ Object oZoomJugador is a cWebView
             Set peLabelPosition to lpTop
             Set psLabel to "Nacionalidad"
             Set psCSSClass to "CampoBlanco"
-        End_Object 
+        End_Object
+
+        // =========================================================================
+        // RESPUESTA SPRINT 2 - TAREA UNDEFINED:
+        // Zoom jugador -> Select posición: ¿Hay relación entre ellas?
+        //
+        // En el modelo de esta aplicación, la conexión entre 'jugador' y 'posicion'
+        // se articula mediante la tabla intermedia 'jugadorposicion'
+        // (ojugadorposicion_DD), aunque en el dominio del fútbol un jugador
+        // pueda considerarse asignado a una posición concreta (portero, defensa,
+        // mediocentro, delantero, etc.).
+        //
+        // En el marco DrillDown de DataFlex, el salto desde ZoomJugador hacia
+        // SelectPosicion se clasifica como 'Undefined' porque no es una relación
+        // jerárquica directa Padre->Hijo (nfFromParent) ni Hijo->Padre (nfFromChild)
+        // entre las vistas de detalle y selección, sino que pasa por la entidad
+        // intermedia / consulta de posiciones.
+        // =========================================================================
+        
     End_Object 
 
     Object oActionGroup is a cWebMenuGroup
@@ -104,7 +117,6 @@ Object oZoomJugador is a cWebView
             Procedure OnClick
                 Send Request_Save
             End_Procedure
-
         End_Object 
 
         Object oEditBtn is a cWebMenuItem
@@ -114,7 +126,6 @@ Object oZoomJugador is a cWebView
                 Send ChangeEditMode True
                 Send SetActionButtons
             End_Procedure
-
         End_Object 
 
         Object oDeleteBtn is a cWebMenuItem
@@ -125,7 +136,6 @@ Object oZoomJugador is a cWebView
             Procedure OnClick
                 Send Request_Delete
             End_Procedure
-
         End_Object 
 
         Object oCancelChangesBtn is a cWebMenuItem
@@ -135,31 +145,48 @@ Object oZoomJugador is a cWebView
             Procedure OnClick
                 Send RefreshRecord
             End_Procedure
-
         End_Object 
     End_Object 
 
-    Procedure UpdateViewCaption
+    Function WebCrumb_Caption Returns String
         Boolean bHasRecord
-        String sNombre
+        String sNombre sApellido
 
         Get HasRecord of ojugador_DD to bHasRecord
-        Move (Trim(jugador.Nombre)) to sNombre
 
-        If (sNombre = "" and bHasRecord) Begin
+        If (bHasRecord or jugador.ID > 0) Begin
             Get Field_Current_Value of ojugador_DD Field jugador.Nombre to sNombre
             Move (Trim(sNombre)) to sNombre
+
+            If (sNombre = "") Begin
+                Move (Trim(jugador.Nombre)) to sNombre
+            End
+
+            Get Field_Current_Value of ojugador_DD Field jugador.Apellido to sApellido
+            Move (Trim(sApellido)) to sApellido
+
+            If (sApellido = "") Begin
+                Move (Trim(jugador.Apellido)) to sApellido
+            End
+
+            If (sNombre <> "" and sApellido <> "") Begin
+                Function_Return ("Jugador: " + sNombre + " " + sApellido)
+            End
+            Else If (sNombre <> "") Begin
+                Function_Return ("Jugador: " + sNombre)
+            End
+            Else Begin
+                Function_Return "Jugador"
+            End
         End
 
-        If (sNombre <> "") Begin
-            WebSet psCaption to ("Jugador: " + sNombre)
-        End
-        Else If (bHasRecord) Begin
-            WebSet psCaption to "Jugador"
-        End
-        Else Begin
-            WebSet psCaption to "Nuevo jugador"
-        End
+        Function_Return "Nuevo jugador"
+    End_Function
+
+    Procedure UpdateViewCaption
+        String sCaption
+        Get WebCrumb_Caption to sCaption
+        WebSet psCaption to sCaption
     End_Procedure
 
     Procedure SetActionButtons

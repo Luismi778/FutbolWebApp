@@ -145,6 +145,23 @@ Object oSelectEntrenador is a cWebView
             End_Procedure
         End_Object 
     End_Object 
+    
+    // =========================================================================
+    // RESPUESTA SPRINT 2 - PREGUNTA 1:
+    // ¿Qué pasa con InvokingObject en una navegación "From main -> Select-Zoom"?
+    //
+    // En una navegación de tipo 'nfFromMain', la vista no es invocada por un
+    // control específico de una vista previa (como una fila o un botón de búsqueda),
+    // sino directamente desde la estructura global de la aplicación (el menú hamburguesa
+    // o el Dashboard mediante ntNavigateBegin).
+    //
+    // Por tanto:
+    // 1. InvokingView e InvokingObject valen 0 (Self / sin objeto invocador de retorno).
+    // 2. Al no existir un objeto invocador que espere un dato de vuelta, la vista
+    //    actúa como raíz del flujo; las acciones de cierre (NavigateClose) no devuelven
+    //    foco a un control llamador, sino que retornan a la vista anterior en la pila
+    //    (Dashboard) o limpian la pila si fue ntNavigateBegin.
+    // =========================================================================
 
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
         Forward Send OnNavigateForward NavigateData hoInvokingView hoInvokingObject

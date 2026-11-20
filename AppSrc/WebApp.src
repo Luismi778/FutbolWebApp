@@ -98,6 +98,17 @@ Object oWebApp is a cWebApp
                             Send NavigatePath
                         End_Procedure
                     End_Object
+
+                    Object oSelectPosicionItem1 is a cWebMenuItem
+                        Set psCaption to "SelectPosicion"
+
+                        WebRegisterPath ntNavigateBegin oSelectPosicion
+
+                        Procedure OnClick
+                            Forward Send OnClick
+                                Send NavigatePath
+                        End_Procedure
+                    End_Object
                 End_Object
 
                 // 3. Botón: Finalizar sesión
@@ -188,6 +199,7 @@ Object oWebApp is a cWebApp
     Use SelectEquipo.wo
     Use ZoomEntrenador.wo
     Use SelectEntrenador.wo
+    Use SelectPosicion.wo
     
     Set phoDefaultView to oDashboard
 End_Object
