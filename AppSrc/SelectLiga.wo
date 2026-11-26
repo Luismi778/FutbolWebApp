@@ -2,6 +2,9 @@
 // SelectLiga
 //
 
+Register_Object oZoomLiga
+Register_Object oSelectEquipo
+
 Use cWebView.pkg
 Use cWebList.pkg
 Use cWebMenuGroup.pkg

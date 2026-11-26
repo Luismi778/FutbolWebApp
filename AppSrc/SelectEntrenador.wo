@@ -2,6 +2,8 @@
 // SelectEntrenador
 //
 
+Register_Object oZoomEntrenador
+
 Use cWebView.pkg
 Use cWebList.pkg
 Use cWebMenuGroup.pkg

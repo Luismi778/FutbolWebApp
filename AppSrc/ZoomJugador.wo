@@ -13,16 +13,21 @@ Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
 Use cjugadorDataDictionary.dd
 Use cjugadorposicionDataDictionary.dd
-Use SelectEquipo.wo
+Use cposicionDataDictionary.dd
+Register_Object oSelectEquipo
+Register_Object oSelectPosicion
 
 Object oZoomJugador is a cWebView
     Set piColumnCount to 12
-    Set psCaption to "ZoomJugador"
+    Set psCaption to "Nuevo jugador"
     Set peWebViewStyle to wvsDrilldown
     Set peViewType to vtZoom
     Set pbShowCaption to False
     Set Verify_Save_Msg to 0
     Set piMaxWidth to 1024
+
+    Register_Procedure UpdateViewCaption
+    Register_Procedure UpdatePosicionJugador
 
     Object oliga_DD is a cligaDataDictionary
     End_Object 
@@ -33,10 +38,20 @@ Object oZoomJugador is a cWebView
 
     Object ojugador_DD is a cjugadorDataDictionary
         Set DDO_Server to oequipo_DD
+
+        Procedure OnPostFind Integer eMessage Boolean bFound
+            Forward Send OnPostFind eMessage bFound
+            Delegate Send UpdateViewCaption
+            Delegate Send UpdatePosicionJugador
+        End_Procedure
     End_Object 
+
+    Object oposicion_DD is a cposicionDataDictionary
+    End_Object
 
     Object ojugadorposicion_DD is a cjugadorposicionDataDictionary
         Set DDO_Server to ojugador_DD
+        Set DDO_Server to oposicion_DD
     End_Object 
 
     Set Main_DD to ojugador_DD
@@ -45,6 +60,18 @@ Object oZoomJugador is a cWebView
     Object oWebMainPanel is a cWebPanel
         Set piColumnCount to 12
         WebSetResponsive piColumnCount rmMobile to 4
+        
+        Object oPosicionesBtn is a cWebButton
+            Set psCaption to "Posiciones"
+            Set piColumnSpan to 4
+            Set piColumnIndex to 0
+
+            WebRegisterPath ntNavigateForward oSelectPosicion
+
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
+        End_Object
 
         Object ojugadorNombre is a cWebForm
             Entry_Item jugador.Nombre
@@ -87,6 +114,15 @@ Object oZoomJugador is a cWebView
             Set peLabelPosition to lpTop
             Set psLabel to "Nacionalidad"
             Set psCSSClass to "CampoBlanco"
+        End_Object
+
+        Object oposicionNombre is a cWebForm
+            Set piColumnSpan to 6
+            Set piColumnIndex to 0
+            Set peLabelPosition to lpTop
+            Set psLabel to "Posición"
+            Set psCSSClass to "CampoBlanco"
+            Set pbReadOnly to True
         End_Object
 
         // =========================================================================
@@ -148,6 +184,55 @@ Object oZoomJugador is a cWebView
         End_Object 
     End_Object 
 
+    Function PosicionActualJugador Returns String
+        Boolean bHasRecord bFound
+        Integer iJugadorID
+        String sPosicion
+
+        Move "" to sPosicion
+        Get HasRecord of ojugador_DD to bHasRecord
+        Get Field_Current_Value of ojugador_DD Field jugador.ID to iJugadorID
+
+        If (iJugadorID <= 0) Begin
+            Move jugador.ID to iJugadorID
+        End
+
+        If (not(bHasRecord) and iJugadorID <= 0) Begin
+            Function_Return ""
+        End
+
+        Clear jugadorposicion
+        Find ge jugadorposicion by Index.1
+        Move (Found) to bFound
+
+        While (bFound)
+            If (jugadorposicion.JugadorID = iJugadorID) Begin
+                Clear posicion
+                Move jugadorposicion.PosicionID to posicion.ID
+                Find eq posicion by Index.1
+                If (Found) Begin
+                    If (sPosicion = "") Begin
+                        Move (Trim(posicion.Nombre)) to sPosicion
+                    End
+                    Else Begin
+                        Move (sPosicion + ", " + Trim(posicion.Nombre)) to sPosicion
+                    End
+                End
+            End
+
+            Find gt jugadorposicion by Index.1
+            Move (Found) to bFound
+        Loop
+
+        Function_Return sPosicion
+    End_Function
+
+    Procedure UpdatePosicionJugador
+        String sPosicion
+        Get PosicionActualJugador to sPosicion
+        WebSet psValue of oposicionNombre to sPosicion
+    End_Procedure
+
     Function WebCrumb_Caption Returns String
         Boolean bHasRecord
         String sNombre sApellido
@@ -183,6 +268,18 @@ Object oZoomJugador is a cWebView
         Function_Return "Nuevo jugador"
     End_Function
 
+    Function NavigateCaption Returns String
+        String sCaption
+        Get WebCrumb_Caption to sCaption
+        Function_Return sCaption
+    End_Function
+
+    Function GetBreadcrumbCaption Returns String
+        String sCaption
+        Get WebCrumb_Caption to sCaption
+        Function_Return sCaption
+    End_Function
+
     Procedure UpdateViewCaption
         String sCaption
         Get WebCrumb_Caption to sCaption
@@ -216,11 +313,13 @@ Object oZoomJugador is a cWebView
     Procedure OnShow
         Forward Send OnShow
         Send UpdateViewCaption
+        Send UpdatePosicionJugador
     End_Procedure
 
     Procedure OnLoad
         Forward Send OnLoad
         Send UpdateViewCaption
+        Send UpdatePosicionJugador
     End_Procedure
 
     Procedure OnViewSaved Handle hoServer Boolean bChanged
@@ -249,6 +348,7 @@ Object oZoomJugador is a cWebView
 
         Send SetActionButtons
         Send UpdateViewCaption
+        Send UpdatePosicionJugador
     End_Procedure
 
 End_Object

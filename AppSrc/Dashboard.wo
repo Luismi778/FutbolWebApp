@@ -49,67 +49,95 @@ Object oDashboard is a cWebView
             Object oLigasTile is a cWebHtmlBox
                 Set piColumnSpan to 8
                 Set psCSSClass to "TileCard"
-                
+                Set pbServerOnClick to True
                 Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%;">' + ;
-                               '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">🏆</span><span style="color: #cbd5e1; font-size: 12px;">01</span></div>' + ;
-                               '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Ligas</h3>' + ;
-                               '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">Competiciones que lo conectan todo.</p>' + ;
-                               '<a data-ServerOnClick="abrir_ligas" href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver ligas →</a>' + ;
-                               '</div>')
-                               
-                Procedure OnAction String sAction String sParam
-                    If (sAction = "abrir_ligas") Begin
+                   '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">🏆</span><span style="color: #cbd5e1; font-size: 12px;">01</span></div>' + ;
+                   '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Ligas</h3>' + ;
+                   '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">Competiciones que lo conectan todo.</p>' + ;
+                   '<a data-ServerOnClick="abrir_ligas" href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver ligas →</a>' + ;
+                   '</div>')
+                   
+                Procedure OnClick String sId String sParam
+                    If (sParam = "abrir_ligas") Begin
                         Send NavigateForward of oSelectLiga Self
                     End
                 End_Procedure
-            End_Object
+             End_Object
 
             // TARJETA 2: EQUIPOS
             Object oEquiposTile is a cWebHtmlBox
                 Set piColumnSpan to 8
                 Set psCSSClass to "TileCard"
+                Set pbServerOnClick to True
                 Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%;">' + ;
                                '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">👕</span><span style="color: #cbd5e1; font-size: 12px;">02</span></div>' + ;
                                '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Equipos</h3>' + ;
                                '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">La identidad de cada club, organizada.</p>' + ;
-                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver equipos →</a>' + ;
+                               '<a data-ServerOnClick="abrir_equipos" href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver equipos →</a>' + ;
                                '</div>')
+
+                Procedure OnClick String sId String sParam
+                    If (sParam = "abrir_equipos") Begin
+                        Send NavigateForward of oSelectEquipo Self
+                    End
+                End_Procedure
             End_Object
 
             // TARJETA 3: POSICIONES
             Object oPosicionesTile is a cWebHtmlBox
                 Set piColumnSpan to 8
                 Set psCSSClass to "TileCard"
+                Set pbServerOnClick to True
                 Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%;">' + ;
                                '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">🎯</span><span style="color: #cbd5e1; font-size: 12px;">03</span></div>' + ;
                                '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Posiciones</h3>' + ;
                                '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">Cada rol tiene su lugar en el campo.</p>' + ;
-                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver posiciones →</a>' + ;
+                               '<a data-ServerOnClick="abrir_posiciones" href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver posiciones →</a>' + ;
                                '</div>')
+
+                Procedure OnClick String sId String sParam
+                    If (sParam = "abrir_posiciones") Begin
+                        Send NavigateForward of oSelectPosicion Self
+                    End
+                End_Procedure
             End_Object
 
             // TARJETA 4: ENTRENADORES
             Object oEntrenadoresTile is a cWebHtmlBox
                 Set piColumnSpan to 8
                 Set psCSSClass to "TileCard"
+                Set pbServerOnClick to True
                 Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%; margin-top: 20px;">' + ;
                                '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">📋</span><span style="color: #cbd5e1; font-size: 12px;">04</span></div>' + ;
                                '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Entrenadores</h3>' + ;
                                '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">Los estrategas detrás de cada partido.</p>' + ;
-                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver entrenadores →</a>' + ;
+                               '<a data-ServerOnClick="abrir_entrenadores" href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver entrenadores →</a>' + ;
                                '</div>')
+
+                Procedure OnClick String sId String sParam
+                    If (sParam = "abrir_entrenadores") Begin
+                        Send NavigateForward of oSelectEntrenador Self
+                    End
+                End_Procedure
             End_Object
 
             // TARJETA 5: JUGADORES
             Object oJugadoresTile is a cWebHtmlBox
                 Set piColumnSpan to 8
                 Set psCSSClass to "TileCard"
+                Set pbServerOnClick to True
                 Set psHtml to ('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%; margin-top: 20px;">' + ;
                                '<div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span style="font-size: 24px;">🏃</span><span style="color: #cbd5e1; font-size: 12px;">05</span></div>' + ;
                                '<h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Jugadores</h3>' + ;
                                '<p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">El talento que hace vibrar la grada.</p>' + ;
-                               '<a href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver jugadores →</a>' + ;
+                               '<a data-ServerOnClick="abrir_jugadores" href="javascript:void(0);" style="color: #4ade80; text-decoration: none; font-size: 12px; font-weight: bold;">Ver jugadores →</a>' + ;
                                '</div>')
+
+                Procedure OnClick String sId String sParam
+                    If (sParam = "abrir_jugadores") Begin
+                        Send NavigateForward of oSelectJugador Self
+                    End
+                End_Procedure
             End_Object
 
         End_Object

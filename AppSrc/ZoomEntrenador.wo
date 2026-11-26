@@ -11,7 +11,9 @@ Use cWebMenuItem.pkg
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
 Use centrenadorDataDictionary.dd
-Use SelectEquipo.wo
+
+Register_Object oSelectEquipo
+Register_Procedure UpdateViewCaption
 
 Object oZoomEntrenador is a cWebView
     Set piColumnCount to 12
@@ -31,6 +33,12 @@ Object oZoomEntrenador is a cWebView
 
     Object oentrenador_DD is a centrenadorDataDictionary
         Set DDO_Server to oequipo_DD
+
+        // Este evento se dispara automáticamente al seleccionar al entrenador
+        Procedure OnPostFind Integer eMessage Boolean bFound
+            Forward Send OnPostFind eMessage bFound
+            Delegate Send UpdateViewCaption
+        End_Procedure
     End_Object
 
     Set Main_DD to oentrenador_DD
@@ -129,10 +137,16 @@ Object oZoomEntrenador is a cWebView
     Function WebCrumb_Caption Returns String
         String sNombre sApellido
         Boolean bHasRecord
+        Integer iEntrenadorID
 
         Get HasRecord of oentrenador_DD to bHasRecord
+        Get Field_Current_Value of oentrenador_DD Field entrenador.ID to iEntrenadorID
 
-        If (bHasRecord or entrenador.ID > 0) Begin
+        If (iEntrenadorID <= 0) Begin
+            Move entrenador.ID to iEntrenadorID
+        End
+
+        If (bHasRecord or iEntrenadorID > 0) Begin
             Get Field_Current_Value of oentrenador_DD Field entrenador.Nombre to sNombre
             Move (Trim(sNombre)) to sNombre
 
@@ -177,6 +191,11 @@ Object oZoomEntrenador is a cWebView
         String sCaption
         Get WebCrumb_Caption to sCaption
         WebSet psCaption to sCaption
+    End_Procedure
+
+    Procedure OnSyncView
+        Forward Send OnSyncView
+        Send UpdateViewCaption
     End_Procedure
 
     Procedure OnChangeRecord Handle hoServer

@@ -1,10 +1,10 @@
 ﻿Use AllWebAppClasses.pkg
 Use cConnection.pkg
 Use cWebMenuItem.pkg
+Use LoginEncryption.pkg
 
 Object oApplication is a cApplication
     Object oConnection is a cConnection
-        Use LoginEncryption.pkg
     End_Object
 End_Object
 
@@ -100,7 +100,7 @@ Object oWebApp is a cWebApp
                     End_Object
 
                     Object oSelectPosicionItem1 is a cWebMenuItem
-                        Set psCaption to "SelectPosicion"
+                        Set psCaption to "Posiciones"
 
                         WebRegisterPath ntNavigateBegin oSelectPosicion
 
@@ -186,21 +186,23 @@ Object oWebApp is a cWebApp
 
     End_Object    
 
+
     Use SessionManager.wo
     Use Login.wo
     Use WebResourceManager.wo
-    Use Dashboard.wo
-   
-    Use ZoomJugador.wo
-    Use SelectJugador.wo
+
+    Use ZoomPosicion.wo
+    Use SelectPosicion.wo
     Use ZoomLiga.wo
     Use SelectLiga.wo
     Use ZoomEquipo.wo
     Use SelectEquipo.wo
     Use ZoomEntrenador.wo
     Use SelectEntrenador.wo
-    Use SelectPosicion.wo
-    Use ZoomPosicion.wo
+    Use ZoomJugador.wo
+    Use SelectJugador.wo
+
+    Use Dashboard.wo
     
     Set phoDefaultView to oDashboard
 End_Object

@@ -36,6 +36,7 @@ Object oZoomPosicion is a cWebView
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
             Set psLabel to "ID"
+            Set pbEnabled to False
         End_Object 
 
         Object oposicionNombre is a cWebForm

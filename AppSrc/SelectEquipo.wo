@@ -11,8 +11,9 @@ Use cWebColumn.pkg
 
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
-Use ZoomEquipo.wo
-Use SelectJugador.wo
+
+Register_Object oZoomEquipo
+Register_Object oSelectJugador
 
 Object oSelectEquipo is a cWebView
     Set psCaption to "Equipos"
@@ -31,7 +32,6 @@ Object oSelectEquipo is a cWebView
 
     Set Main_DD to oequipo_DD
     Set Server  to oequipo_DD
-
 
     Object oList is a cWebList
         Set piColumnSpan to 0
@@ -75,7 +75,7 @@ Object oSelectEquipo is a cWebView
         End_Object 
 
         // Botón adicional en la fila para ver los jugadores de este equipo
-       Object oJugadoresButton is a cWebColumnButton
+        Object oJugadoresButton is a cWebColumnButton
             Set psCaption to "Jugadores"
             Set piWidth to 75
             Set pbFixedWidth to True
@@ -93,7 +93,7 @@ Object oSelectEquipo is a cWebView
             Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
                 Move True to NavigateData.bReadOnly
             End_Procedure
-       End_Object
+        End_Object
        
         // Ruta global de la lista para el clic en la fila (Abre el Zoom del Equipo)
         WebRegisterPath ntNavigateForward oZoomEquipo
@@ -124,7 +124,7 @@ Object oSelectEquipo is a cWebView
             Move True to NavigateData.bReadOnly
         End_Procedure
 
-    End_Object // Fin de oList
+    End_Object 
 
     Object oActionGroup is a cWebMenuGroup
 
