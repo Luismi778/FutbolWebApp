@@ -1,1 +1,19 @@
-AppSrc/SelectPosicion.wo
+# Compilados y depuración DataFlex
+Programs/*.exe
+Programs/*.dbg
+Programs/*.log
+AppSrc/*.dep
+AppSrc/*.prn
+
+# Metadatos y estado local del Studio
+IdeSrc/*.mtd
+IdeSrc/*.dsk
+IdeSrc/Workspace.loc
+
+# Cachés y sesiones locales
+Data/*.cch
+Data/reindex.log
+Data/webappsession.*
+Data/WebAppSession.*
+Data/webappserverprops.*
+Data/WebAppServerProps.*
